@@ -7,7 +7,7 @@ export default class WebsiteCard extends Component {
     if (desc && desc.startsWith('![](')) {
       return desc.substr(4, desc.length - 5)
     }
-    return "/img/grid-world.png"
+    return "/img/default-icon.png"
   }
   handleClick = e => {
     api.getCardAttachments(this.props.children.id)

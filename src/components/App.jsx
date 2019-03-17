@@ -72,19 +72,31 @@ class App extends Component {
 
   }
   handleWeekDayChange = e => {
+
     let key = e.target.id
+    let target = e.target 
+    // if (e.target.value === "") {
+    //   this.setState({
+    //     [key]: value
+    //   })
+    // }
     let value = Number(e.target.value)
     if (key === 'week') {
       this.setState({
-        week: value
+        week: Math.max(value, 1)
+      }, () => {
+        target.select()
       })
     }
     else {
       this.setState({
-        week: this.state.week + Math.floor((value-1)  / 7),
+        week: Math.max(this.state.week + Math.floor((value-1)  / 7), 1),
         day: ((value+7-1)%7)+1
+      }, () => {
+        target.select()
       })
     }
+
   }
   resetWeekDay = e => {
     if (e) e.preventDefault()
@@ -105,10 +117,13 @@ class App extends Component {
       <span key={i} className="badge badge-dark" style={this.getLabelStyle(label)}>{label.name}</span>
     ))
   }
+  selectInputContent = e => {
+    e.target.select()
+  }
   render() {
     return (
       <div className="App container">
-        <h1 className="text-center mt-3">IronDashboard</h1>
+        <h1 className="text-center mt-5">IronDashboard</h1>
 
         <div className="WebsiteCards-container mt-5">
           {this.getWebsitesCards().map(card => (
@@ -120,11 +135,11 @@ class App extends Component {
           <form className="form-inline">
             <div className="form-group mb-2">
               <label htmlFor="week">Week </label>
-              <input type="number" className="form-control week-day-selector" id="week" value={this.state.week} onChange={this.handleWeekDayChange} />
+              <input type="number" className="form-control week-day-selector" id="week" value={this.state.week} onChange={this.handleWeekDayChange} onFocus={this.selectInputContent} />
             </div>
             <div className="form-group mb-2">
               <label htmlFor="day"> - Day </label>
-              <input type="number" className="form-control week-day-selector" id="day" value={this.state.day} onChange={this.handleWeekDayChange} />
+              <input type="number" className="form-control week-day-selector" id="day" value={this.state.day} onChange={this.handleWeekDayChange} onFocus={this.selectInputContent} />
             </div>
             <button className="btn btn-outline-primary mb-2 ml-auto" onClick={this.resetWeekDay}>Reset to current day</button>
           </form>
@@ -135,7 +150,7 @@ class App extends Component {
             <tr>
               {/* <th>Label</th> */}
               <th>Content</th>
-              <th>Extra Attachments</th>
+              <th>Extra Links</th>
             </tr>
           </thead>
           <tbody>

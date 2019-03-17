@@ -1,0 +1,72 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+input.week-day-selector {
+  width: 70px !important;
+  margin-right: 10px;
+  margin-left: 10px;
+}
+
+table.table tr td .badge {
+  width: 110px;
+  margin-right: 10px;
+}
+
+.WebsiteCards-container {
+  display: flex;
+  // flex-wrap: wrap;
+  overflow-x: scroll;
+  margin: -10px;
+
+  .WebsiteCard {
+    margin: 10px;
+  }
+}
+
+$logoSide: 60px;
+
+.WebsiteCard {
+  height: $logoSide + 30px;
+  min-width: $logoSide;
+  max-width: $logoSide;
+  position: relative;
+  cursor: pointer;
+
+  img {
+    position: absolute;
+    z-index: 0;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: $logoSide;
+    border-radius: 10px;
+    object-fit: cover;
+  }
+
+  .name {
+    position: absolute;
+    z-index: 1;
+    top: $logoSide + 5px;
+    left: 0;
+    height: 20%;
+    width: 100%;
+    background: rgba(255,255,255,0.8);
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    text-align: center;
+    font-size: 12px;
+  }
+}

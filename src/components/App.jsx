@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './App.css';
+import WebsiteCard from './WebsiteCard'
 import api from '../api';
 
 class App extends Component {
@@ -18,9 +18,28 @@ class App extends Component {
     return list && list.id
   }
   getCardsOfTheDate() {
-
     return this.state.cards
       .filter(card => card.idList === this.getIdList())
+  }
+  getTodoCards() {
+    try {
+      let todoListId = this.state.lists.find(list => list.name === 'TODO').id
+      return this.state.cards
+        .filter(card => card.idList === todoListId)
+    }
+    catch (e) {
+      return []
+    }
+  }
+  getWebsitesCards() {
+    try {
+      let todoListId = this.state.lists.find(list => list.name === 'Websites').id
+      return this.state.cards
+        .filter(card => card.idList === todoListId)
+    }
+    catch (e) {
+      return []
+    }
   }
   getLabelStyle(label) {
     let dicColors = {
@@ -39,8 +58,8 @@ class App extends Component {
       backgroundColor: dicColors[label.color]
     }
   }
-  handleContentClick(e, id) {
-    console.log('TCL: App -> handleContentClick -> id', id)
+  openFirstAttachmentUrl(e, id) {
+    console.log('TCL: App -> openFirstAttachmentUrl -> id', id)
     e.preventDefault()
     api.getCardAttachments(id)
       .then(attachements => {
@@ -77,30 +96,44 @@ class App extends Component {
       week,
       day,
     })
-
+  }
+  displayFirstLabels(card) {
+    if (card.labels.length === 0) {
+      return <span className="badge badge-dark">No Label</span>
+    }
+    return card.labels.map((label, i) => (
+      <span key={i} className="badge badge-dark" style={this.getLabelStyle(label)}>{label.name}</span>
+    ))
   }
   render() {
     return (
       <div className="App container">
-        <h1>IronDashboard - Week {this.state.week} - Day {this.state.day}</h1>
-        <p>Trello: <a href="https://trello.com/b/Fk50s50H/lis-ftwd-schedule-2019-03-18">https://trello.com/b/Fk50s50H/lis-ftwd-schedule-2019-03-18</a></p>
-        <form className="form-inline">
-          <div className="form-group mb-2">
-            <label htmlFor="week">Week: </label>
-            <input type="number" className="form-control week-day-selector" id="week" value={this.state.week} onChange={this.handleWeekDayChange} />
-          </div>
-          <div className="form-group mb-2">
-            <label htmlFor="day">Day: </label>
-            <input type="number" className="form-control week-day-selector" id="day" value={this.state.day} onChange={this.handleWeekDayChange} />
-          </div>
-          <button className="btn btn-outline-primary mb-2" onClick={this.resetWeekDay}>Reset to current day</button>
+        <h1 className="text-center mt-3">IronDashboard</h1>
 
-        </form>
-        <h2>Schedule of the day</h2>
+        <div className="WebsiteCards-container mt-5">
+          {this.getWebsitesCards().map(card => (
+            <WebsiteCard key={card.id}>{card}</WebsiteCard>
+          ))}
+        </div>
+
+        <h2 className="mt-5">
+          <form className="form-inline">
+            <div className="form-group mb-2">
+              <label htmlFor="week">Week </label>
+              <input type="number" className="form-control week-day-selector" id="week" value={this.state.week} onChange={this.handleWeekDayChange} />
+            </div>
+            <div className="form-group mb-2">
+              <label htmlFor="day"> - Day </label>
+              <input type="number" className="form-control week-day-selector" id="day" value={this.state.day} onChange={this.handleWeekDayChange} />
+            </div>
+            <button className="btn btn-outline-primary mb-2 ml-auto" onClick={this.resetWeekDay}>Reset to current day</button>
+          </form>
+        </h2>
+        {/* <h2>Week <input type="number" className="form-control week-day-selector" id="week" value={this.state.week} onChange={this.handleWeekDayChange} style={{display: 'inline'}} /> - Day {this.state.day}</h2> */}
         <table className="table table-sm">
           <thead>
             <tr>
-              <th>Label</th>
+              {/* <th>Label</th> */}
               <th>Content</th>
               <th>Extra Attachments</th>
             </tr>
@@ -109,23 +142,27 @@ class App extends Component {
             {this.getCardsOfTheDate().map(card => <tr key={card.id}>
               {/* <td>{JSON.stringify(card.labels)}</td> */}
               <td>
-                {card.labels.map((label, i) => (
-                  <span key={i} className="badge badge-dark" style={this.getLabelStyle(label)}>{label.name}</span>
-                ))}
-              </td>
-              <td>
-                {card.badges.attachments > 0 && <a href="https://trello.com/b/Fk50s50H/lis-ftwd-schedule-2019-03-18" onClick={e => this.handleContentClick(e, card.id)}>{card.name}</a>}
+                {this.displayFirstLabels(card)}
+              {/* </td>
+              <td> */}
+                {card.badges.attachments > 0 && <a href="/#" onClick={e => this.openFirstAttachmentUrl(e, card.id)}>{card.name}</a>}
                 {card.badges.attachments === 0 && card.name}
               </td>
-              <td>{card.badges.attachments}</td>
+              <td>{card.badges.attachments > 1 && <a href={card.shortUrl} target="_blank">Go to the card</a>}</td>
             </tr>)}
           </tbody>
         </table>
 
-        <hr/>
 
-        <h2>TODO</h2>
-        <p>Fetch data from a column</p>
+        <h2 className="mt-5">TODO</h2>
+        <ul>
+          {this.getTodoCards().map(card => (
+            <li key={card.id}>
+              {card.badges.attachments > 0 && <a href="/#" onClick={e => this.openFirstAttachmentUrl(e, card.id)}>{card.name}</a>}
+              {card.badges.attachments === 0 && card.name}
+            </li>
+          ))}
+        </ul>
       </div>
     );
   }

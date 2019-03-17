@@ -25,7 +25,7 @@ export default {
       params: {
         lists: 'open',
         labels: 'all',
-        fields: 'name,desc,descData,closed,idOrganization,pinned,url,shortUrl,prefs,labelNames',
+        fields: 'name,desc,descData,closed,idOrganization,pinned,url,shortUrl,prefs,labelNames,badges',
         cards: 'visible',
       }
     })

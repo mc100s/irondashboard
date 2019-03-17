@@ -12,3 +12,9 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+input.week-day-selector {
+  width: 70px !important;
+  margin-right: 10px;
+  margin-left: 10px;
+}

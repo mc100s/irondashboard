@@ -39,19 +39,26 @@ class App extends Component {
     );
   }
   componentDidMount() {
-
     api.getBoard()
       .then(board => {
-        console.log('TCL: App -> componentDidMount -> board', board)
-
         this.setState({
           boardName: board.name,
           cards: board.cards,
           lists: board.lists,
-        }, () => {
-          // this.resetWeekDay()
         })
       })
+    
+    // Update every minute
+    setInterval(() => {
+      api.getBoard()
+      .then(board => {
+        this.setState({
+          boardName: board.name,
+          cards: board.cards,
+          lists: board.lists,
+        })
+      })
+    }, 60*1000)
   }
 }
 

@@ -35,6 +35,18 @@ table.table tr td .badge {
   }
 }
 
+.App {
+  min-height: 100vh;
+  background-size: cover;
+  background-attachment: fixed;
+  background-position: center;
+  padding: 10px 0;
+
+  h1 {
+    color: white;
+  }
+}
+
 $logoSide: 60px;
 
 .WebsiteCard {
@@ -43,30 +55,40 @@ $logoSide: 60px;
   max-width: $logoSide;
   position: relative;
   cursor: pointer;
-
+  
   img {
+    background-color: #fff;
     position: absolute;
     z-index: 0;
     top: 0;
     left: 0;
     width: 100%;
     height: $logoSide;
-    border-radius: 10px;
+    border-radius: 12px;
     object-fit: cover;
   }
 
   .name {
+    color: white;
     position: absolute;
     z-index: 1;
     top: $logoSide + 5px;
     left: 0;
     height: 20%;
     width: 100%;
-    background: rgba(255,255,255,0.8);
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
     text-align: center;
     font-size: 12px;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.6);
+    font-weight: 500;
   }
+}
+
+.white-transparent-box {
+  background-color: rgba(255,255,255,0.9);
+  border-radius: 10px;
+  padding: 15px 15px;
+  margin-top: 20px;;
 }

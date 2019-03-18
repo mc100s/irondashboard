@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import WebsiteCard from './WebsiteCard'
 import api from '../api';
+import { getBackgroundOfTheDay } from '../utils'
 
 class App extends Component {
   constructor(props) {
@@ -74,7 +75,7 @@ class App extends Component {
   handleWeekDayChange = e => {
 
     let key = e.target.id
-    let target = e.target 
+    let target = e.target
     // if (e.target.value === "") {
     //   this.setState({
     //     [key]: value
@@ -90,8 +91,8 @@ class App extends Component {
     }
     else {
       this.setState({
-        week: Math.max(this.state.week + Math.floor((value-1)  / 7), 1),
-        day: ((value+7-1)%7)+1
+        week: Math.max(this.state.week + Math.floor((value - 1) / 7), 1),
+        day: ((value + 7 - 1) % 7) + 1
       }, () => {
         target.select()
       })
@@ -121,63 +122,83 @@ class App extends Component {
     e.target.select()
   }
   render() {
+    let images = [
+      'https://images.unsplash.com/photo-1525183995014-bd94c0750cd5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1742&q=80',
+      'https://images.unsplash.com/photo-1476937673710-8174834aa065?w=2550&q=80'
+    ]
     return (
-      <div className="App container">
-        <h1 className="text-center mt-5">IronDashboard</h1>
 
-        <div className="WebsiteCards-container mt-5">
-          {this.getWebsitesCards().map(card => (
-            <WebsiteCard key={card.id}>{card}</WebsiteCard>
-          ))}
-        </div>
+      <div className="App" style={{ backgroundImage: `linear-gradient( rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2) ), url(${getBackgroundOfTheDay()})` }}>
+        <div className="container" >
+          <h1 className="text-center mt-5">IronDashboard</h1>
 
-        <h2 className="mt-5">
-          <form className="form-inline">
-            <div className="form-group mb-2">
-              <label htmlFor="week">Week </label>
-              <input type="number" className="form-control week-day-selector" id="week" value={this.state.week} onChange={this.handleWeekDayChange} onFocus={this.selectInputContent} />
-            </div>
-            <div className="form-group mb-2">
-              <label htmlFor="day"> - Day </label>
-              <input type="number" className="form-control week-day-selector" id="day" value={this.state.day} onChange={this.handleWeekDayChange} onFocus={this.selectInputContent} />
-            </div>
-            <button className="btn btn-outline-primary mb-2 ml-auto" onClick={this.resetWeekDay}>Reset to current day</button>
-          </form>
-        </h2>
-        {/* <h2>Week <input type="number" className="form-control week-day-selector" id="week" value={this.state.week} onChange={this.handleWeekDayChange} style={{display: 'inline'}} /> - Day {this.state.day}</h2> */}
-        <table className="table table-sm">
-          <thead>
-            <tr>
-              {/* <th>Label</th> */}
-              <th>Content</th>
-              <th>Extra Links</th>
-            </tr>
-          </thead>
-          <tbody>
-            {this.getCardsOfTheDate().map(card => <tr key={card.id}>
-              {/* <td>{JSON.stringify(card.labels)}</td> */}
-              <td>
-                {this.displayFirstLabels(card)}
-              {/* </td>
+          <div className="WebsiteCards-container mt-5">
+            {this.getWebsitesCards().map(card => (
+              <WebsiteCard key={card.id}>{card}</WebsiteCard>
+            ))}
+          </div>
+
+          <div className="white-transparent-box">
+            <h2>
+              <form className="form-inline">
+                <div className="form-group mb-2">
+                  <label htmlFor="week">Week </label>
+                  <input type="number" className="form-control week-day-selector" id="week" value={this.state.week} onChange={this.handleWeekDayChange} onFocus={this.selectInputContent} />
+                </div>
+                <div className="form-group mb-2">
+                  <label htmlFor="day"> - Day </label>
+                  <input type="number" className="form-control week-day-selector" id="day" value={this.state.day} onChange={this.handleWeekDayChange} onFocus={this.selectInputContent} />
+                </div>
+                <button className="btn btn-outline-primary mb-2 ml-auto" onClick={this.resetWeekDay}>Reset to current day</button>
+              </form>
+            </h2>
+            {/* <h2>Week <input type="number" className="form-control week-day-selector" id="week" value={this.state.week} onChange={this.handleWeekDayChange} style={{display: 'inline'}} /> - Day {this.state.day}</h2> */}
+            <table className="table table-sm">
+              <thead>
+                <tr>
+                  {/* <th>Label</th> */}
+                  <th>Content</th>
+                  <th>Extra Links</th>
+                </tr>
+              </thead>
+              <tbody>
+                {this.getCardsOfTheDate().map(card => <tr key={card.id}>
+                  {/* <td>{JSON.stringify(card.labels)}</td> */}
+                  <td>
+                    {this.displayFirstLabels(card)}
+                    {/* </td>
               <td> */}
-                {card.badges.attachments > 0 && <a href="/#" onClick={e => this.openFirstAttachmentUrl(e, card.id)}>{card.name}</a>}
-                {card.badges.attachments === 0 && card.name}
-              </td>
-              <td>{card.badges.attachments > 1 && <a href={card.shortUrl} target="_blank">Go to the card</a>}</td>
-            </tr>)}
-          </tbody>
-        </table>
+                    {card.badges.attachments > 0 && <a href="/#" onClick={e => this.openFirstAttachmentUrl(e, card.id)}>{card.name}</a>}
+                    {card.badges.attachments === 0 && card.name}
+                  </td>
+                  <td>{card.badges.attachments > 1 && <a href={card.shortUrl} target="_blank">Go to the card</a>}</td>
+                </tr>)}
+              </tbody>
+            </table>
+          </div>
 
+          <div className="row">
+            <div className="col-6">
+              <div className="white-transparent-box">
+                <h2>TODO</h2>
+                <ul>
+                  {this.getTodoCards().map(card => (
+                    <li key={card.id}>
+                      {card.badges.attachments > 0 && <a href="/#" onClick={e => this.openFirstAttachmentUrl(e, card.id)}>{card.name}</a>}
+                      {card.badges.attachments === 0 && card.name}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+            {/* <div className="col-6">
+              <div className="white-transparent-box">
+                <h2>Restaurants</h2>
+              </div>
+            </div> */}
+          </div>
 
-        <h2 className="mt-5">TODO</h2>
-        <ul>
-          {this.getTodoCards().map(card => (
-            <li key={card.id}>
-              {card.badges.attachments > 0 && <a href="/#" onClick={e => this.openFirstAttachmentUrl(e, card.id)}>{card.name}</a>}
-              {card.badges.attachments === 0 && card.name}
-            </li>
-          ))}
-        </ul>
+        </div>
       </div>
     );
   }

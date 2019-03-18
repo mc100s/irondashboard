@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import WebsiteCard from './WebsiteCard'
 import api from '../api';
 import { getBackgroundOfTheDay } from '../utils'
+import WeekSelector from './WeekSelector';
+import TrelloTodos from './TrelloTodos';
+import WebsiteCardsContainer from './WebsiteCardsContainer';
 
 class App extends Component {
   constructor(props) {
@@ -14,190 +17,23 @@ class App extends Component {
       day: "", // number between 1 and 7
     }
   }
-  getIdList() {
-    let list = this.state.lists.find(list => list.name === `Week ${this.state.week} - Day ${this.state.day}`)
-    return list && list.id
-  }
-  getCardsOfTheDate() {
-    return this.state.cards
-      .filter(card => card.idList === this.getIdList())
-  }
-  getTodoCards() {
-    try {
-      let todoListId = this.state.lists.find(list => list.name === 'TODO').id
-      return this.state.cards
-        .filter(card => card.idList === todoListId)
-    }
-    catch (e) {
-      return []
-    }
-  }
-  getWebsitesCards() {
-    try {
-      let todoListId = this.state.lists.find(list => list.name === 'Websites').id
-      return this.state.cards
-        .filter(card => card.idList === todoListId)
-    }
-    catch (e) {
-      return []
-    }
-  }
-  getLabelStyle(label) {
-    let dicColors = {
-      green: '#61bd4f',
-      yellow: '#f2d600',
-      orange: '#ff9f1a',
-      red: '#eb5a46',
-      purple: '#c377e0',
-      blue: '#0079bf',
-      sky: '#00c2e0',
-      lime: '#51e898',
-      pink: '#ff78cb',
-      black: '#355263',
-    }
-    return {
-      backgroundColor: dicColors[label.color]
-    }
-  }
-  openFirstAttachmentUrl(e, id) {
-    console.log('TCL: App -> openFirstAttachmentUrl -> id', id)
-    e.preventDefault()
-    api.getCardAttachments(id)
-      .then(attachements => {
-        console.log('TCL: componentDidMount -> attachements', attachements)
-        if (attachements.length > 0) {
-          window.open(attachements[0].url, '_blank')
-          // win.focus()
-        }
-      })
-
-  }
-  handleWeekDayChange = e => {
-
-    let key = e.target.id
-    let target = e.target
-    // if (e.target.value === "") {
-    //   this.setState({
-    //     [key]: value
-    //   })
-    // }
-    let value = Number(e.target.value)
-    if (key === 'week') {
-      this.setState({
-        week: Math.max(value, 1)
-      }, () => {
-        target.select()
-      })
-    }
-    else {
-      this.setState({
-        week: Math.max(this.state.week + Math.floor((value - 1) / 7), 1),
-        day: ((value + 7 - 1) % 7) + 1
-      }, () => {
-        target.select()
-      })
-    }
-
-  }
-  resetWeekDay = e => {
-    if (e) e.preventDefault()
-    let startingDate = new Date(this.state.boardName.substr(-10))
-    let nbOfDaysSinceTheBeginningOfBootcamp = Math.floor((new Date() - startingDate) / (1000 * 60 * 60 * 24))
-    let week = Math.floor(nbOfDaysSinceTheBeginningOfBootcamp / 7) + 1
-    let day = (nbOfDaysSinceTheBeginningOfBootcamp % 7) + 1
-    this.setState({
-      week,
-      day,
-    })
-  }
-  displayFirstLabels(card) {
-    if (card.labels.length === 0) {
-      return <span className="badge badge-dark">No Label</span>
-    }
-    return card.labels.map((label, i) => (
-      <span key={i} className="badge badge-dark" style={this.getLabelStyle(label)}>{label.name}</span>
-    ))
-  }
-  selectInputContent = e => {
-    e.target.select()
-  }
+  
+  
   render() {
-    let images = [
-      'https://images.unsplash.com/photo-1525183995014-bd94c0750cd5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1742&q=80',
-      'https://images.unsplash.com/photo-1476937673710-8174834aa065?w=2550&q=80'
-    ]
     return (
-
       <div className="App" style={{ backgroundImage: `linear-gradient( rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2) ), url(${getBackgroundOfTheDay()})` }}>
         <div className="container" >
           <h1 className="text-center mt-5">IronDashboard</h1>
 
-          <div className="WebsiteCards-container mt-5">
-            {this.getWebsitesCards().map(card => (
-              <WebsiteCard key={card.id}>{card}</WebsiteCard>
-            ))}
-          </div>
+          <WebsiteCardsContainer cards={this.state.cards} lists={this.state.lists} />
 
-          <div className="white-transparent-box">
-            <h2>
-              <form className="form-inline">
-                <div className="form-group mb-2">
-                  <label htmlFor="week">Week </label>
-                  <input type="number" className="form-control week-day-selector" id="week" value={this.state.week} onChange={this.handleWeekDayChange} onFocus={this.selectInputContent} />
-                </div>
-                <div className="form-group mb-2">
-                  <label htmlFor="day"> - Day </label>
-                  <input type="number" className="form-control week-day-selector" id="day" value={this.state.day} onChange={this.handleWeekDayChange} onFocus={this.selectInputContent} />
-                </div>
-                <button className="btn btn-outline-primary mb-2 ml-auto" onClick={this.resetWeekDay}>Reset to current day</button>
-              </form>
-            </h2>
-            {/* <h2>Week <input type="number" className="form-control week-day-selector" id="week" value={this.state.week} onChange={this.handleWeekDayChange} style={{display: 'inline'}} /> - Day {this.state.day}</h2> */}
-            <table className="table table-sm">
-              <thead>
-                <tr>
-                  {/* <th>Label</th> */}
-                  <th>Content</th>
-                  <th>Extra Links</th>
-                </tr>
-              </thead>
-              <tbody>
-                {this.getCardsOfTheDate().map(card => <tr key={card.id}>
-                  {/* <td>{JSON.stringify(card.labels)}</td> */}
-                  <td>
-                    {this.displayFirstLabels(card)}
-                    {/* </td>
-              <td> */}
-                    {card.badges.attachments > 0 && <a href="/#" onClick={e => this.openFirstAttachmentUrl(e, card.id)}>{card.name}</a>}
-                    {card.badges.attachments === 0 && card.name}
-                  </td>
-                  <td>{card.badges.attachments > 1 && <a href={card.shortUrl} target="_blank">Go to the card</a>}</td>
-                </tr>)}
-              </tbody>
-            </table>
-          </div>
+          <WeekSelector cards={this.state.cards} lists={this.state.lists} boardName={this.state.boardName} />
 
           <div className="row">
-            <div className="col-6">
-              <div className="white-transparent-box">
-                <h2>TODO</h2>
-                <ul>
-                  {this.getTodoCards().map(card => (
-                    <li key={card.id}>
-                      {card.badges.attachments > 0 && <a href="/#" onClick={e => this.openFirstAttachmentUrl(e, card.id)}>{card.name}</a>}
-                      {card.badges.attachments === 0 && card.name}
-                    </li>
-                  ))}
-                </ul>
-              </div>
+            <div className="col-md">
+              <TrelloTodos cards={this.state.cards} lists={this.state.lists} />
             </div>
-            {/* <div className="col-6">
-              <div className="white-transparent-box">
-                <h2>Restaurants</h2>
-              </div>
-            </div> */}
           </div>
-
         </div>
       </div>
     );
@@ -213,7 +49,7 @@ class App extends Component {
           cards: board.cards,
           lists: board.lists,
         }, () => {
-          this.resetWeekDay()
+          // this.resetWeekDay()
         })
       })
   }

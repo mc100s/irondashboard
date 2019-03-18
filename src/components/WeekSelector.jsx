@@ -51,7 +51,7 @@ export default class WeekSelector extends Component {
     let isSmall = window.innerWidth < 768;
 		console.log('TCL: WeekSelector -> displayFirstLabels -> window.innerWidth', window.innerWidth)
     if (card.labels.length === 0) {
-      return <span className="badge badge-dark">No Label</span>
+      return <span className="badge badge-dark">{isSmall ? 'N' : 'No Label'}</span>
     }
     return card.labels.map((label, i) => (
       <span key={i} className="badge badge-dark" style={this.getLabelStyle(label, isSmall)}>{!isSmall ? label.name : label.name[0]}</span>

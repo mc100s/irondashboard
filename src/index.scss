@@ -106,7 +106,7 @@ $logoSide: 60px;
     table-layout: fixed;
     
     tr > *:first-child {
-      width: 70%;
+      width: 50%;
     }
 
     td {
@@ -117,6 +117,13 @@ $logoSide: 60px;
       text-overflow: ellipsis;
       overflow: hidden;
       white-space: nowrap;
+
+      p {
+        margin: 0;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+      }
     }
   }
 }

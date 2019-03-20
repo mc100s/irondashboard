@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import ReactMarkdown from 'react-markdown'
 import api from '../api';
 
 export default class WeekSelector extends Component {
@@ -108,7 +109,7 @@ export default class WeekSelector extends Component {
           <thead>
             <tr className="text-center">
               <th>Content</th>
-              <th>Extra Links</th>
+              <th>Extra</th>
             </tr>
           </thead>
           <tbody>
@@ -118,7 +119,7 @@ export default class WeekSelector extends Component {
                 {card.badges.attachments > 0 && <a href="/#" onClick={e => this.openFirstAttachmentUrl(e, card.id)}>{card.name}</a>}
                 {card.badges.attachments === 0 && card.name}
               </td>
-              <td>{card.badges.attachments > 1 && <a href={card.shortUrl} target="_blank">Go to the card</a>}</td>
+              <td><ReactMarkdown source={card.desc} /></td>
             </tr>)}
           </tbody>
         </table>

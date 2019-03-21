@@ -69,6 +69,13 @@ export default class WeekSelector extends Component {
       day,
     })
   }
+  addWeekDay(delta, e) {
+    if (e) e.preventDefault()
+    this.setState({
+      week: Math.max(this.state.week + Math.floor((this.state.day + delta - 1) / 7), 1),
+      day: ((this.state.day + delta + 7 - 1 ) % 7) + 1
+    })
+  }
   getLabelStyle(label) {
     let dicColors = {
       green: '#61bd4f',
@@ -102,7 +109,11 @@ export default class WeekSelector extends Component {
               <label htmlFor="day"> - Day </label>
               <input type="number" className="form-control week-day-selector" id="day" value={this.state.day} onChange={this.handleWeekDayChange} onFocus={this.selectInputContent} />
             </div>
-            <button className="btn btn-outline-primary mb-2 ml-auto" onClick={this.resetWeekDay}>Reset to current day</button>
+            <div className="ml-auto mb-2">
+              <button className="btn btn-outline-primary ml-1" onClick={e=>this.addWeekDay(-1,e)}><i className="fa fa-arrow-left"></i></button>
+              <button className="btn btn-outline-primary ml-1" onClick={this.resetWeekDay}><i className="fa fa-calendar-day"></i></button>
+              <button className="btn btn-outline-primary ml-1" onClick={e=>this.addWeekDay(1,e)}><i className="fa fa-arrow-right"></i></button>
+            </div>
           </form>
         </h2>
         <table className="table table-sm table-borderless table-hover">
@@ -119,12 +130,32 @@ export default class WeekSelector extends Component {
                 {card.badges.attachments > 0 && <a href="/#" onClick={e => this.openFirstAttachmentUrl(e, card.id)}>{card.name}</a>}
                 {card.badges.attachments === 0 && card.name}
               </td>
-              <td><ReactMarkdown source={card.desc} /></td>
+              <td>
+                <ReactMarkdown 
+                  source={card.desc}
+                  renderers={{link: props => <a href={props.href} target="_blank" rel="noopener noreferrer">{props.children}</a>}}
+                />
+              </td>
             </tr>)}
           </tbody>
         </table>
       </div>
     )
+  }
+  componentDidMount() {
+    window.addEventListener('keydown', e => {
+      console.log(e.keyCode)
+      if (e.keyCode === 37) { // Left
+        this.addWeekDay(-1)
+      }
+      else if (e.keyCode === 39) { // Right
+        this.addWeekDay(1)
+      }
+      else if (e.keyCode === 32) { // Space
+        e.preventDefault()
+        this.resetWeekDay()
+      }
+    })
   }
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.boardName !== this.props.boardName) {

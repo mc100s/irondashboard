@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import WebsiteCard from './WebsiteCard'
 import api from '../api';
 import { getBackgroundOfTheDay } from '../utils'
 import WeekSelector from './WeekSelector';

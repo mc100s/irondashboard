@@ -22,7 +22,7 @@ export default class WebsiteCard extends Component {
   render() {
     return (
       <div className="WebsiteCard" onClick={this.handleClick}>
-        <img src={this.getImage()} />
+        <img alt="background" src={this.getImage()} />
         <div className="name">{this.props.children.name}</div>
       </div>
     )

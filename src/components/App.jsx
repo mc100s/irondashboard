@@ -4,6 +4,7 @@ import { getBackgroundOfTheDay } from '../utils'
 import WeekSelector from './WeekSelector';
 import TrelloTodos from './TrelloTodos';
 import WebsiteCardsContainer from './WebsiteCardsContainer';
+import IronStars from './IronStars'
 
 class App extends Component {
   constructor(props) {
@@ -16,23 +17,27 @@ class App extends Component {
       day: "", // number between 1 and 7
     }
   }
-  
-  
+
+
   render() {
     return (
       <div className="App" style={{ backgroundImage: `linear-gradient( rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2) ), url(${getBackgroundOfTheDay()})` }}>
         <div className="container" >
           <h1 className="text-center mt-5">IronDashboard</h1>
 
-          <WebsiteCardsContainer cards={this.state.cards} lists={this.state.lists} />
 
           <WeekSelector cards={this.state.cards} lists={this.state.lists} boardName={this.state.boardName} />
+
+          <IronStars />
 
           <div className="row">
             <div className="col-md">
               <TrelloTodos cards={this.state.cards} lists={this.state.lists} />
             </div>
           </div>
+          
+
+          <WebsiteCardsContainer cards={this.state.cards} lists={this.state.lists} />
         </div>
       </div>
     );
@@ -46,18 +51,18 @@ class App extends Component {
           lists: board.lists,
         })
       })
-    
+
     // Update every minute
     setInterval(() => {
       api.getBoard()
-      .then(board => {
-        this.setState({
-          boardName: board.name,
-          cards: board.cards,
-          lists: board.lists,
+        .then(board => {
+          this.setState({
+            boardName: board.name,
+            cards: board.cards,
+            lists: board.lists,
+          })
         })
-      })
-    }, 60*1000)
+    }, 60 * 1000)
   }
 }
 

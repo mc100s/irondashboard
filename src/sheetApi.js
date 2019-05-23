@@ -44,11 +44,11 @@ export default {
   // Parameter range: string. Example: 'Users!A2:D'
   // Return value: a Promise where the resolve value is an array of "documents" (= objects), like with MongoDB
   getSheetDocuments(sheetName) {
-    return this.getRawSheet(sheetName+'!A:Z')
+    return this.getRawSheet(sheetName + '!A:Z')
       .then(matrix => {
         let documents = []
         for (let row = 1; row < matrix.length; row++) {
-          let newDocument = {}
+          let newDocument = { row }
           for (let col = 0; col < matrix[row].length; col++) {
             newDocument[matrix[0][col]] = matrix[row][col]
           }
@@ -66,5 +66,34 @@ export default {
   getPendingRequests() {
     return this.getRequests()
       .then(requests => requests.filter(request => !request.reviewer))
-  }
+  },
+  resolveRequest(requestRow, reviewer) {
+    window.gapi.client.load("sheets", "v4", () => {
+      window.gapi.client.sheets.spreadsheets.values
+        .get({
+          spreadsheetId: config.spreadsheetId,
+          range: "Users!D5:E6"
+        })
+        .then(
+          response => console.log(response.result),
+          response => console.error(response.result.error)
+        );
+    });
+
+
+    window.gapi.client.load("sheets", "v4", () => {
+      window.gapi.client.sheets.spreadsheets.values.update({
+        spreadsheetId: config.spreadsheetId,
+        range: 'Users!E6:E6',
+        // valueInputOption: valueInputOption,
+        resource: {
+          values: [[reviewer]]
+        }
+      }).then((response) => {
+        var result = response.result;
+        console.log(`${result.updatedCells} cells updated.`);
+      });
+    })
+
+  },
 }

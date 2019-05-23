@@ -1,68 +1,25 @@
 import React, { Component } from 'react';
-import api from '../api';
 import { getBackgroundOfTheDay } from '../utils'
-import WeekSelector from './WeekSelector';
-import TrelloTodos from './TrelloTodos';
-import WebsiteCardsContainer from './WebsiteCardsContainer';
-import IronStars from './IronStars'
+import Home from './pages/Home'
+import CreateRequest from './pages/CreateRequest'
+import RequestView from './pages/RequestView'
+import { Switch, Route } from 'react-router-dom'
 
 class App extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      boardName: '',
-      cards: [],
-      lists: [],
-      week: "", // number between 1 and 10
-      day: "", // number between 1 and 7
-    }
-  }
-
-
   render() {
     return (
       <div className="App" style={{ backgroundImage: `linear-gradient( rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2) ), url(${getBackgroundOfTheDay()})` }}>
         <div className="container" >
           <h1 className="text-center mt-5">IronDashboard</h1>
 
-
-          <WeekSelector cards={this.state.cards} lists={this.state.lists} boardName={this.state.boardName} />
-
-          <IronStars />
-
-          <div className="row">
-            <div className="col-md">
-              <TrelloTodos cards={this.state.cards} lists={this.state.lists} />
-            </div>
-          </div>
-          
-
-          <WebsiteCardsContainer cards={this.state.cards} lists={this.state.lists} />
+          <Switch>
+            <Route path="/create-request" component={CreateRequest} />
+            <Route path="/request-view/:row" component={RequestView} />
+            <Route path="/" component={Home} />
+          </Switch>
         </div>
       </div>
     );
-  }
-  componentDidMount() {
-    api.getBoard()
-      .then(board => {
-        this.setState({
-          boardName: board.name,
-          cards: board.cards,
-          lists: board.lists,
-        })
-      })
-
-    // Update every minute
-    setInterval(() => {
-      api.getBoard()
-        .then(board => {
-          this.setState({
-            boardName: board.name,
-            cards: board.cards,
-            lists: board.lists,
-          })
-        })
-    }, 60 * 1000)
   }
 }
 

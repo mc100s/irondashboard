@@ -103,6 +103,13 @@ $logoSide: 60px;
   margin-top: 20px;;
 }
 
+.flex-spaced-center {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+
 .WeekSelector {
   table {
     table-layout: fixed;
@@ -129,3 +136,4 @@ $logoSide: 60px;
     }
   }
 }
+

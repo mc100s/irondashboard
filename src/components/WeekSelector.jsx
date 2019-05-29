@@ -103,7 +103,7 @@ export default class WeekSelector extends Component {
           <form className="form-inline">
             <div className="form-group mb-2">
               <label htmlFor="week">Week </label>
-              <input type="number" className="form-control week-day-selector" id="week" value={this.state.week} onChange={this.handleWeekDayChange} onFocus={this.selectInputContent} />
+              <input type="number" className="form-control form-control-plaintext  week-day-selector" id="week" value={this.state.week} onChange={this.handleWeekDayChange} onFocus={this.selectInputContent} />
             </div>
             <div className="form-group mb-2">
               <label htmlFor="day"> - Day </label>

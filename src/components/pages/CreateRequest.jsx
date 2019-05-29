@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/accessible-emoji */
 import React, { useState, useEffect } from 'react'
 import sheetApi from '../../sheetApi'
 
@@ -28,10 +29,14 @@ export default function CreateRequest() {
     })
   }
 
+  function handleSubmit(e) {
+    e.preventDefault()
+  }
+
   return (
     <div className="white-transparent-box">
       <h2 className="text-center">Create a Request</h2>
-      <form>
+      <form onSubmit={handleSubmit}>
         <div className="form-group row">
           <label htmlFor="name" className="col-sm-2 col-form-label">Name</label>
           <div className="col-sm-10">
@@ -55,6 +60,13 @@ export default function CreateRequest() {
           <label htmlFor="message" className="col-sm-2 col-form-label">Message</label>
           <div className="col-sm-10">
             <textarea type="password" className="form-control" id="message" placeholder="Describe your problem" rows={5} />
+          </div>
+        </div>
+        <div className="form-group row">
+          <div className="col-sm-2">
+          </div>
+          <div className="col-sm-10">
+            <button className="btn btn-success">Create</button>
           </div>
         </div>
       </form>

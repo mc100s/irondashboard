@@ -70,7 +70,7 @@ function IronStars() {
         </div> */}
         <div className="col-lg-3">
           <div className="white-transparent-box">
-            <h2>Wall of Stars</h2>
+            <h2>Star Wars</h2>
             {state.isLoading && <div>Loading...</div>}
             {getUserSorted('nbOfCollectedStars').map((user, i) => <div key={i}>
               {user.nbOfCollectedStars}⭐️ {user.name}

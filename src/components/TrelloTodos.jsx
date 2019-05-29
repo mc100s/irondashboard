@@ -34,6 +34,7 @@ export default class TrelloTodos extends Component {
     this.forceUpdate()
   }
   render() {
+    if (this.getTodoCards().length === 0) return null
     return (
       <div className="white-transparent-box">
         <h2>TODO</h2>

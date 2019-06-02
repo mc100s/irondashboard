@@ -1,13 +1,17 @@
 /* eslint-disable jsx-a11y/accessible-emoji */
 import React, { useState, useEffect } from 'react'
 import sheetApi from '../../sheetApi'
+import { useConnectedEmail } from '../../hooks'
 
 export default function CreateRequest() {
   const [state, setState] = useState({
     isLoading: true,
     users: [],
     requests: [],
+    bounty: '',
+    message: ''
   })
+  const connectedEmail = useConnectedEmail()
 
   useEffect(() => {
     sheetApi.init()
@@ -31,6 +35,16 @@ export default function CreateRequest() {
 
   function handleSubmit(e) {
     e.preventDefault()
+    sheetApi.addRequest(connectedEmail, state.bounty, state.message)
+      .then(response => {
+        console.log("TCL: handleSubmit -> response", response)
+      })
+  }
+
+  function handleInputChange(e) {
+    setState({
+      [e.target.name]: e.target.value
+    })
   }
 
   return (
@@ -38,35 +52,33 @@ export default function CreateRequest() {
       <h2 className="text-center">Create a Request</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group row">
-          <label htmlFor="name" className="col-sm-2 col-form-label">Name</label>
+          <label htmlFor="name" className="col-sm-2 col-form-label">Email</label>
           <div className="col-sm-10">
-            <select className="form-control" id="name">
-              {state.isLoading && <option>Loading...</option>}
-              {!state.isLoading && getUserSorted('name').map((user, i) => <option key={i} value={user.name}>{user.name}</option>)}
-            </select>
+            {connectedEmail.value}
           </div>
         </div>
         <div className="form-group row">
           <label htmlFor="bounty" className="col-sm-2 col-form-label">Bounty</label>
           <div className="col-sm-10">
-            <select className="form-control" id="bounty">
-              <option value={1}>1⭐️</option>
-              <option value={2}>2⭐️</option>
-              <option value={3}>3⭐️</option>
+            <select className="form-control" id="bounty" value={state.bounty} onChange={handleInputChange}>
+              <option value={1}>1⭐️ (max 3⭐️ / day)</option>
+              <option value={2}>2⭐️ (max 3⭐️ / day)</option>
+              <option value={3}>3⭐️ (max 3⭐️ / day)</option>
             </select>
           </div>
         </div>
         <div className="form-group row">
           <label htmlFor="message" className="col-sm-2 col-form-label">Message</label>
           <div className="col-sm-10">
-            <textarea type="password" className="form-control" id="message" placeholder="Describe your problem" rows={5} />
+            <textarea type="password" className="form-control" id="message" placeholder="Describe your problem" rows={5} value={state.message} onChange={handleInputChange} />
           </div>
         </div>
         <div className="form-group row">
           <div className="col-sm-2">
           </div>
           <div className="col-sm-10">
-            <button className="btn btn-success">Create</button>
+            {connectedEmail.value && <button className="btn btn-success">Create</button>}
+            {!connectedEmail.value && <button className="btn btn-primary" onClick={sheetApi.signIn}>Log in</button>}
           </div>
         </div>
       </form>

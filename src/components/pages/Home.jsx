@@ -25,7 +25,7 @@ class App extends Component {
 
         <WeekSelector cards={this.state.cards} lists={this.state.lists} boardName={this.state.boardName} />
 
-        <IronStars />
+        {/* <IronStars /> */}
 
         <div className="row">
           <div className="col-md">

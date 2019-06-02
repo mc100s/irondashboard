@@ -87,7 +87,7 @@ export default {
       .then(requests => requests.filter(request => !request.reviewer))
   },
   resolveRequest(requestRow, reviewer) {
-    return new Promise((resolve, request) => {
+    return new Promise((resolve) => {
       window.gapi.client.load("sheets", "v4", () => {
         window.gapi.client.sheets.spreadsheets.values.update({
           spreadsheetId: config.spreadsheetId,
@@ -102,9 +102,26 @@ export default {
           console.log(`${result.updatedCells} cell(s) updated`);
         });
       })
-
     })
+  },
 
+  addRequest(requesterEmail, bounty, message) {
+    return new Promise((resolve) => {
+      window.gapi.client.load("sheets", "v4", () => {
+        window.gapi.client.sheets.spreadsheets.values.update({
+          spreadsheetId: config.spreadsheetId,
+          range: `Requests!A8:D8`,
+          valueInputOption: 'USER_ENTERED',
+          resource: {
+            values: [["requesterEmail","new Date()","bounty","message"]]
+          }
+        }).then((response) => {
+          resolve(response)
+          var result = response.result;
+          console.log(`${result.updatedCells} cell(s) updated`);
+        });
+      })
+    })
   },
 
   signIn() {

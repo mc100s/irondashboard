@@ -2,14 +2,23 @@
 
 export function getBackgroundOfTheDay() {
   let images = [
-    'https://images.unsplash.com/photo-1525183995014-bd94c0750cd5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1600&q=80',
-    'https://images.unsplash.com/photo-1476937673710-8174834aa065?w=1600&q=80',
-    'https://images.unsplash.com/photo-1505852679233-d9fd70aff56d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1600&q=80',
-    'https://images.unsplash.com/photo-1541623089466-8e777dd05d70?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjI0MX0&auto=format&fit=crop&w=1600&q=80',
-    'https://images.unsplash.com/photo-1498429089284-41f8cf3ffd39?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80',
-    'https://images.unsplash.com/photo-1552632438-a8df228733dc?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1600&q=80',
-    'https://images.unsplash.com/photo-1552679699-dafca9d2c58c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1600&q=80'
+    '/img/bg1.jpeg',
+    '/img/bg2.jpeg',
+    '/img/bg3.jpeg',
+    '/img/bg4.jpeg',
+    '/img/bg6.jpeg',
+    '/img/bg5.jpeg',
+    '/img/bg7.jpeg'
   ]
+  // let images = [
+  //   'https://images.unsplash.com/photo-1525183995014-bd94c0750cd5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1600&q=80',
+  //   'https://images.unsplash.com/photo-1476937673710-8174834aa065?w=1600&q=80',
+  //   'https://images.unsplash.com/photo-1505852679233-d9fd70aff56d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1600&q=80',
+  //   'https://images.unsplash.com/photo-1541623089466-8e777dd05d70?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjI0MX0&auto=format&fit=crop&w=1600&q=80',
+  //   'https://images.unsplash.com/photo-1498429089284-41f8cf3ffd39?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80',
+  //   'https://images.unsplash.com/photo-1552632438-a8df228733dc?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1600&q=80',
+  //   'https://images.unsplash.com/photo-1552679699-dafca9d2c58c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1600&q=80'
+  // ]
 
   let now = new Date();
   let start = new Date(now.getFullYear(), 0, 0);

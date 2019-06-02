@@ -8,6 +8,7 @@ export default class WeekSelector extends Component {
     this.state = {
       week: "", // number between 1 and 10
       day: "", // number between 1 and 7
+      search: ''
     }
   }
   openFirstAttachmentUrl(e, id) {
@@ -19,9 +20,18 @@ export default class WeekSelector extends Component {
         }
       })
   }
-  getCardsOfTheDate() {
+  getCardsToDisplay() {
+    // If there is no search, filter based on the week and day
+    if (this.state.search.length === 0)
+      return this.props.cards
+        .filter(card => card.idList === this.getIdList())
+
+    // Otherwise, filter based on the typed search (limit of 30 elements)
+    let upperSearch = this.state.search.toUpperCase()
     return this.props.cards
-      .filter(card => card.idList === this.getIdList())
+      .filter(card => card.labels.length > 0
+        && (card.name.toUpperCase().includes(upperSearch) || card.labels[0].name.toUpperCase().includes(upperSearch)))
+    // .filter((card,i) => i < 30)
   }
 
   getIdList() {
@@ -50,7 +60,7 @@ export default class WeekSelector extends Component {
   }
   displayFirstLabels(card) {
     let isSmall = window.innerWidth < 768;
-		console.log('TCL: WeekSelector -> displayFirstLabels -> window.innerWidth', window.innerWidth)
+    console.log('TCL: WeekSelector -> displayFirstLabels -> window.innerWidth', window.innerWidth)
     if (card.labels.length === 0) {
       return <span className="badge badge-dark">{isSmall ? 'N' : 'No Label'}</span>
     }
@@ -59,7 +69,7 @@ export default class WeekSelector extends Component {
     ))
   }
   resetWeekDay = e => {
-    if (e) e.preventDefault()
+    // if (e) e.preventDefault()
     let startingDate = new Date(this.props.boardName.substr(-10))
     let nbOfDaysSinceTheBeginningOfBootcamp = Math.floor((new Date() - startingDate) / (1000 * 60 * 60 * 24))
     let week = Math.floor(nbOfDaysSinceTheBeginningOfBootcamp / 7) + 1
@@ -73,7 +83,7 @@ export default class WeekSelector extends Component {
     if (e) e.preventDefault()
     this.setState({
       week: Math.max(this.state.week + Math.floor((this.state.day + delta - 1) / 7), 1),
-      day: ((this.state.day + delta + 7 - 1 ) % 7) + 1
+      day: ((this.state.day + delta + 7 - 1) % 7) + 1
     })
   }
   getLabelStyle(label) {
@@ -106,16 +116,20 @@ export default class WeekSelector extends Component {
               <input type="number" className="form-control form-control-plaintext  week-day-selector" id="week" value={this.state.week} onChange={this.handleWeekDayChange} onFocus={this.selectInputContent} />
             </div>
             <div className="form-group mb-2">
-              <label htmlFor="day"> - Day </label>
-              <input type="number" className="form-control week-day-selector" id="day" value={this.state.day} onChange={this.handleWeekDayChange} onFocus={this.selectInputContent} />
+              <label htmlFor="day">Day </label>
+              <input type="number" className="form-control form-control-plaintext week-day-selector" id="day" value={this.state.day} onChange={this.handleWeekDayChange} onFocus={this.selectInputContent} />
             </div>
             <div className="ml-auto mb-2">
-              <button className="btn btn-outline-primary ml-1" onClick={e=>this.addWeekDay(-1,e)}><i className="fa fa-arrow-left"></i></button>
+              {/* <button className="btn btn-outline-primary ml-1" onClick={e => this.addWeekDay(-1, e)}>W</button> */}
+              <button className="btn btn-outline-primary ml-1" onClick={e => this.addWeekDay(-1, e)}><i className="fa fa-arrow-left"></i></button>
               <button className="btn btn-outline-primary ml-1" onClick={this.resetWeekDay}><i className="fa fa-calendar-day"></i></button>
-              <button className="btn btn-outline-primary ml-1" onClick={e=>this.addWeekDay(1,e)}><i className="fa fa-arrow-right"></i></button>
+              <button className="btn btn-outline-primary ml-1" onClick={e => this.addWeekDay(1, e)}><i className="fa fa-arrow-right"></i></button>
             </div>
           </form>
         </h2>
+        <div className="search">
+          <input className="form-control" placeholder="Type to search..." type="text" value={this.state.search} onChange={e => this.setState({ search: e.target.value })} />
+        </div>
         <table className="table table-sm table-borderless table-hover">
           <thead>
             <tr className="text-center">
@@ -124,16 +138,16 @@ export default class WeekSelector extends Component {
             </tr>
           </thead>
           <tbody>
-            {this.getCardsOfTheDate().map(card => <tr key={card.id}>
+            {this.getCardsToDisplay().map(card => <tr key={card.id}>
               <td>
                 {this.displayFirstLabels(card)}
                 {card.badges.attachments > 0 && <a href="/#" onClick={e => this.openFirstAttachmentUrl(e, card.id)}>{card.name}</a>}
                 {card.badges.attachments === 0 && card.name}
               </td>
               <td>
-                <ReactMarkdown 
+                <ReactMarkdown
                   source={card.desc}
-                  renderers={{link: props => <a href={props.href} target="_blank" rel="noopener noreferrer">{props.children}</a>}}
+                  renderers={{ link: props => <a href={props.href} target="_blank" rel="noopener noreferrer">{props.children}</a> }}
                 />
               </td>
             </tr>)}
@@ -152,7 +166,8 @@ export default class WeekSelector extends Component {
         this.addWeekDay(1)
       }
       else if (e.keyCode === 32) { // Space
-        e.preventDefault()
+        if (e.target.tagName !== 'INPUT') e.preventDefault()
+        console.log(e.target)
         this.resetWeekDay()
       }
     })

@@ -3,8 +3,6 @@ import api from '../../api';
 import WeekSelector from '../WeekSelector';
 import TrelloTodos from '../TrelloTodos';
 import WebsiteCardsContainer from '../WebsiteCardsContainer';
-import IronStars from '../IronStars'
-import { Switch, Route } from 'react-router-dom'
 
 class App extends Component {
   constructor(props) {

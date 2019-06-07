@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import ReactMarkdown from 'react-markdown'
 import api from '../api';
+import TrelloCard from './TrelloCard'
 
 export default class WeekSelector extends Component {
   constructor(props) {
@@ -8,8 +8,10 @@ export default class WeekSelector extends Component {
     this.state = {
       week: "", // number between 1 and 10
       day: "", // number between 1 and 7
-      search: ''
+      search: '',
+      mode: 'D', // Possible values: 'D' (day), 'W'
     }
+
   }
   openFirstAttachmentUrl(e, id) {
     e.preventDefault()
@@ -20,11 +22,11 @@ export default class WeekSelector extends Component {
         }
       })
   }
-  getCardsToDisplay() {
+  getCardsToDisplay(week = this.state.week, day = this.state.day) {
     // If there is no search, filter based on the week and day
     if (this.state.search.length === 0)
       return this.props.cards
-        .filter(card => card.idList === this.getIdList())
+        .filter(card => card.idList === this.getIdList(week, day))
 
     // Otherwise, filter based on the typed search (limit of 30 elements)
     let upperSearch = this.state.search.toUpperCase()
@@ -34,8 +36,8 @@ export default class WeekSelector extends Component {
     // .filter((card,i) => i < 30)
   }
 
-  getIdList() {
-    let list = this.props.lists.find(list => list.name === `Week ${this.state.week} - Day ${this.state.day}`)
+  getIdList(week, day) {
+    let list = this.props.lists.find(list => list.name === `Week ${week} - Day ${day}`)
     return list && list.id
   }
   handleWeekDayChange = e => {
@@ -69,7 +71,7 @@ export default class WeekSelector extends Component {
     ))
   }
   resetWeekDay = e => {
-    // if (e) e.preventDefault()
+    if (e) e.preventDefault()
     let startingDate = new Date(this.props.boardName.substr(-10))
     let nbOfDaysSinceTheBeginningOfBootcamp = Math.floor((new Date() - startingDate) / (1000 * 60 * 60 * 24))
     let week = Math.floor(nbOfDaysSinceTheBeginningOfBootcamp / 7) + 1
@@ -81,10 +83,17 @@ export default class WeekSelector extends Component {
   }
   addWeekDay(delta, e) {
     if (e) e.preventDefault()
-    this.setState({
-      week: Math.max(this.state.week + Math.floor((this.state.day + delta - 1) / 7), 1),
-      day: ((this.state.day + delta + 7 - 1) % 7) + 1
-    })
+    if (this.state.mode === 'W') {
+      this.setState({
+        week: this.state.week + delta
+      })
+    }
+    else {
+      this.setState({
+        week: Math.max(this.state.week + Math.floor((this.state.day + delta - 1) / 7), 1),
+        day: ((this.state.day + delta + 7 - 1) % 7) + 1
+      })
+    }
   }
   getLabelStyle(label) {
     let dicColors = {
@@ -106,21 +115,27 @@ export default class WeekSelector extends Component {
   selectInputContent = e => {
     e.target.select()
   }
+  toggleMode = e => {
+    e.preventDefault()
+    this.setState({
+      mode: this.state.mode === 'D' ? 'W' : 'D'
+    })
+  }
   render() {
     return (
       <div className="WeekSelector white-transparent-box">
         <h2>
           <form className="form-inline">
-            <div className="form-group mb-2">
-              <label htmlFor="week">Week </label>
+            {/* <div className="form-group mb-2"> */}
+            Week
               <input type="number" className="form-control form-control-plaintext  week-day-selector" id="week" value={this.state.week} onChange={this.handleWeekDayChange} onFocus={this.selectInputContent} />
-            </div>
-            <div className="form-group mb-2">
-              <label htmlFor="day">Day </label>
+            {/* </div> */}
+            {this.state.mode === 'D' && <>
+              Day
               <input type="number" className="form-control form-control-plaintext week-day-selector" id="day" value={this.state.day} onChange={this.handleWeekDayChange} onFocus={this.selectInputContent} />
-            </div>
+            </>}
             <div className="ml-auto mb-2">
-              {/* <button className="btn btn-outline-primary ml-1" onClick={e => this.addWeekDay(-1, e)}>W</button> */}
+              <button className="btn btn-outline-primary ml-1" onClick={this.toggleMode}><strong>{this.state.mode === 'D' ? 'W' : 'D'}</strong></button>
               <button className="btn btn-outline-primary ml-1" onClick={e => this.addWeekDay(-1, e)}><i className="fa fa-arrow-left"></i></button>
               <button className="btn btn-outline-primary ml-1" onClick={this.resetWeekDay}><i className="fa fa-calendar-day"></i></button>
               <button className="btn btn-outline-primary ml-1" onClick={e => this.addWeekDay(1, e)}><i className="fa fa-arrow-right"></i></button>
@@ -130,29 +145,24 @@ export default class WeekSelector extends Component {
         <div className="search">
           <input className="form-control" placeholder="Type to search..." type="text" value={this.state.search} onChange={e => this.setState({ search: e.target.value })} />
         </div>
-        <table className="table table-sm table-borderless table-hover">
-          <thead>
-            <tr className="text-center">
-              <th>Content</th>
-              <th>Extra</th>
-            </tr>
-          </thead>
-          <tbody>
-            {this.getCardsToDisplay().map(card => <tr key={card.id}>
-              <td>
-                {this.displayFirstLabels(card)}
-                {card.badges.attachments > 0 && <a href="/#" onClick={e => this.openFirstAttachmentUrl(e, card.id)}>{card.name}</a>}
-                {card.badges.attachments === 0 && card.name}
-              </td>
-              <td>
-                <ReactMarkdown
-                  source={card.desc}
-                  renderers={{ link: props => <a href={props.href} target="_blank" rel="noopener noreferrer">{props.children}</a> }}
-                />
-              </td>
-            </tr>)}
-          </tbody>
-        </table>
+
+        {this.state.mode === 'D' || this.state.search ?
+          (
+            <div className="trello-card-container">
+              {this.getCardsToDisplay().map(card => <TrelloCard key={card.id}>{card}</TrelloCard>)}
+            </div>
+          )
+          :
+          (
+            <div className="row">
+              {[1, 2, 3, 4, 5].map(day => (
+                <div className="col-1-5" key={day}>
+                  {this.getCardsToDisplay(this.state.week, day).map(card => <TrelloCard key={card.id}>{card}</TrelloCard>)}
+                </div>
+              ))}
+            </div>
+          )
+        }
       </div>
     )
   }

@@ -25,14 +25,6 @@ export default function CreateRequest() {
       })
   }, [])
 
-  function getUserSorted(field) {
-    return [...state.users].sort((a, b) => {
-      if (field === "nbOfCollectedStars") return b.nbOfCollectedStars - a.nbOfCollectedStars
-      if (a[field] > b[field]) return 1
-      return -1
-    })
-  }
-
   function handleSubmit(e) {
     e.preventDefault()
     sheetApi.addRequest(connectedEmail, state.bounty, state.message)

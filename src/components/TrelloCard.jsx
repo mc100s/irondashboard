@@ -29,20 +29,19 @@ export default function TrelloCard({ children: card }) {
       backgroundColor: dicColors[label.color]
     }
   }
-  function displayFirstLabels(card) {
-    // let isSmall = window.innerWidth < 768;
+  function displayLabels(card) {
     if (card.labels.length === 0) {
       return <span className="badge badge-dark">No Label</span>
     }
     return card.labels.map((label, i) => (
-      <span key={i} className="badge badge-dark" style={getLabelStyle(label)}>{label.name}</span>
+      <span key={i} className="badge badge-dark" style={getLabelStyle(label)}>{label.name || " "}</span>
     ))
   }
   return (
     <div className="TrelloCard">
-      {/* {JSON.stringify(card, null, 2)} */}
-
-      {displayFirstLabels(card)}
+      <div className="label-container">
+        {displayLabels(card)}
+      </div>
       {card.badges.attachments > 0 && <a href="/#" onClick={e => openFirstAttachmentUrl(e, card.id)}><strong>{card.name}</strong></a>}
       {card.badges.attachments === 0 && <strong>{card.name}</strong>}
       <div className="TrelloCard__content">

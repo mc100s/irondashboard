@@ -37,7 +37,9 @@ export default class WeekSelector extends Component {
   }
 
   getIdList(week, day) {
-    let list = this.props.lists.find(list => list.name === `Week ${week} - Day ${day}`)
+    let list
+    if (1 <= day && day <= 5) list = this.props.lists.find(list => list.name === `Week ${week} - Day ${day}`)
+    else list = this.props.lists.find(list => list.name.toLowerCase().startsWith(`extras week ${week}`))
     return list && list.id
   }
   handleWeekDayChange = e => {
@@ -72,10 +74,14 @@ export default class WeekSelector extends Component {
   }
   resetWeekDay = e => {
     if (e) e.preventDefault()
-    let startingDate = new Date(this.props.boardName.substr(-10))
+    let startingDate = new Date(process.env.REACT_APP_FIRST_DAY)
     let nbOfDaysSinceTheBeginningOfBootcamp = Math.floor((new Date() - startingDate) / (1000 * 60 * 60 * 24))
     let week = Math.floor(nbOfDaysSinceTheBeginningOfBootcamp / 7) + 1
     let day = (nbOfDaysSinceTheBeginningOfBootcamp % 7) + 1
+    if (week > 10) {
+      week = 1
+      day = 1
+    }
     this.setState({
       week,
       day,

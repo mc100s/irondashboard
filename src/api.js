@@ -4,10 +4,6 @@ const service = axios.create({
   baseURL: 'https://api.trello.com/1/',
 })
 
-// // To get a token: https://trello.com/app-key
-// axios.defaults.params = {}
-// axios.defaults.params.x = '42'
-
 const errHandler = err => {
   console.error(err)
   if (err.response && err.response.data) {
@@ -21,7 +17,7 @@ export default {
   service: service,
 
   getBoard() {
-    return service.get('/boards/IiQUmouD', {
+    return service.get(`/boards/${process.env.REACT_APP_TRELLO_BOARD_ID}`, {
       params: {
         lists: 'open',
         labels: 'all',
